@@ -8,6 +8,7 @@ from A_star import Astar
 from enum import Enum, auto
 import Button
 import copy
+import time
 
 WINDOW_SIZE = (800, 600)
 GRID_SIZE = (20, 15) #dimesions of grid
@@ -33,21 +34,24 @@ def main():
                 if bfs_button.is_clicked(mouse_pos):
                     if start_set and end_set:
                         saved_tiles = copy.deepcopy(grid.tiles)
-
+                        start_time = time.time()
                         # Run BFS
                         print(bfs(grid.start_pos, grid.end_pos, grid, screen))
+                        end_time = time.time()
+                        time_taken = end_time - start_time
+                        print(f"BFS Algorithm took {time_taken:.2f} seconds to complete.")
 
-                        # Ensure grid state is reset before GBFS
-                        grid.tiles = copy.deepcopy(saved_tiles)
-                        grid.draw()
-                        pygame.display.flip()
-                        print(gbfs(grid.start_pos, grid.end_pos, grid, screen))
-
-                        # Ensure grid state is reset before A*
-                        grid.tiles = copy.deepcopy(saved_tiles)
-                        grid.draw()
-                        pygame.display.flip()
-                        print(Astar(grid.start_pos, grid.end_pos, grid, screen))
+                        # # Ensure grid state is reset before GBFS
+                        # grid.tiles = copy.deepcopy(saved_tiles)
+                        # grid.draw()
+                        # pygame.display.flip()
+                        # print(gbfs(grid.start_pos, grid.end_pos, grid, screen))
+                        #
+                        # # Ensure grid state is reset before A*
+                        # grid.tiles = copy.deepcopy(saved_tiles)
+                        # grid.draw()
+                        # pygame.display.flip()
+                        # print(Astar(grid.start_pos, grid.end_pos, grid, screen))
                 # Left click for walls, start, and end
                 if event.button == 1:
                     #print(start_set, tile_pos)

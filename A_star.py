@@ -30,6 +30,7 @@ def Astar(start, end, grid_instance, screen, delay=100):
         current = queue.get()[1]
         if current != start:
             grid_instance.tiles[current[1]][current[0]] = Tile.VISITED
+            visited.add(current)
             grid_instance.draw()
             #bfs_button.draw(screen)
             pygame.display.flip()
@@ -46,16 +47,18 @@ def Astar(start, end, grid_instance, screen, delay=100):
 
         for dx, dy in directions:
             neighbor = (current[0] + dx, current[1] + dy)
-            distance = gx[current] + 1 #assumption that each neighbour block has a distance of 1
-            if is_valid(neighbor, grid_instance) and neighbor not in visited and distance < gx.get(neighbor, float('inf')):
-                dist_neigh = heuristic(neighbor, end)
-                visited.add(neighbor)
-                parent[neighbor] = current
-                fx[neighbor] = dist_neigh+distance
-                gx[neighbor] = distance
-                queue.put((fx[neighbor], neighbor))
-                if neighbor != end:
-                    grid_instance.tiles[neighbor[1]][neighbor[0]] = Tile.FRONTIER
+
+            if is_valid(neighbor, grid_instance) and neighbor not in visited:
+                gx_neigh = gx[current] + 1
+                fx_neigh = gx_neigh + heuristic(neighbor, end)*1.4
+                #print(neighbor, heuristic(neighbor, end) )
+                if fx_neigh < fx.get(neighbor, float('inf')):
+                    parent[neighbor] = current
+                    gx[neighbor] = gx_neigh
+                    fx[neighbor] = fx_neigh
+                    queue.put((fx_neigh, neighbor))
+                    if neighbor != end:
+                        grid_instance.tiles[neighbor[1]][neighbor[0]] = Tile.FRONTIER
 
     return []
 
