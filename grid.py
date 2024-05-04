@@ -52,6 +52,10 @@ class Grid:
     def get_tile_pos(self, mouse_pos):
         return mouse_pos[0] // self.tile_size[0], mouse_pos[1] // self.tile_size[1]
 
+    def clear_grid(self):
+        self.tiles = [[Tile.EMPTY for _ in range(self.size[0])] for _ in range(self.size[1])]
+
+
     def set_start(self, pos):
         self.tiles[pos[1]][pos[0]] = Tile.START
         self.start_pos =(pos[0],pos[1])

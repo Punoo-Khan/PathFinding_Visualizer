@@ -1,5 +1,4 @@
 import pygame
-import time
 
 class SoundManager:
     def __init__(self):
@@ -8,14 +7,9 @@ class SoundManager:
 
     def play_sound(self, volume=1.0, pitch=1.0):
         self.beep.set_volume(volume)
-        # Adjust the playback frequency, which can crudely affect pitch
-        new_frequency = int(44100 * pitch * 5.0)
-        pygame.mixer.quit()
-        pygame.mixer.init(frequency=new_frequency)
-        self.beep.play()
+        self.beep.play()  # Play the sound but do not wait for it to finish
 
-    def stop_sound(self):
-        self.beep.stop()
-        pygame.mixer.quit()
-        pygame.mixer.init(frequency=44100)  # Reset to normal frequency
-
+    def adjust_pitch(self, pitch):
+        # This method is not perfect and will only simulate pitch change by adjusting the sound volume.
+        volume = max(0.0, min(1.0, pitch))  # Ensure volume is between 0.0 and 1.0
+        self.beep.set_volume(volume)

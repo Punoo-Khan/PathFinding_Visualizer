@@ -53,7 +53,7 @@ font = pygame.font.SysFont('Jokerman', 20)
 
 # Create text buttons
 button1 = Button("Create Your Own Map ", font, 300, 300, WHITE)
-button2 = Button("Choose From Our Map", font, 300, 350, WHITE)
+button2 = Button("Create a Random Map", font, 300, 350, WHITE)
 
 # Main loop
 running = True

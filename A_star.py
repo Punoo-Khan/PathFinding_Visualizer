@@ -4,7 +4,8 @@ import sys
 from grid import Tile
 from Greedy_mod import heuristic
 
-
+tiles_visited = 0
+path_length = 1 # intialzing at 1 because it isnt counting end at the function
 def heuristic(a, b):
     # Manhattan distance on a grid
     (x1, y1) = a
@@ -12,6 +13,8 @@ def heuristic(a, b):
     return abs(x1 - x2) + abs(y1 - y2)
 
 def Astar(start, end, grid_instance, screen, delay=100):
+    global tiles_visited
+    global path_length
     queue = PriorityQueue()
     queue.put((0,start))
     gx = {start:0}
@@ -21,7 +24,7 @@ def Astar(start, end, grid_instance, screen, delay=100):
 
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Down, Right, Up, Left
 
-    while queue:
+    while not queue.empty():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -43,6 +46,7 @@ def Astar(start, end, grid_instance, screen, delay=100):
                 grid_instance.draw()
                 pygame.display.flip()
                 pygame.time.delay(delay)
+            print(f"the path length is {path_length} and the tiles visited by A* is {tiles_visited}")
             return path
 
         for dx, dy in directions:
@@ -50,7 +54,7 @@ def Astar(start, end, grid_instance, screen, delay=100):
 
             if is_valid(neighbor, grid_instance) and neighbor not in visited:
                 gx_neigh = gx[current] + 1
-                fx_neigh = gx_neigh + heuristic(neighbor, end)*1.4
+                fx_neigh = gx_neigh + heuristic(neighbor, end)
                 #print(neighbor, heuristic(neighbor, end) )
                 if fx_neigh < fx.get(neighbor, float('inf')):
                     parent[neighbor] = current
@@ -59,6 +63,7 @@ def Astar(start, end, grid_instance, screen, delay=100):
                     queue.put((fx_neigh, neighbor))
                     if neighbor != end:
                         grid_instance.tiles[neighbor[1]][neighbor[0]] = Tile.FRONTIER
+                        tiles_visited += 1
 
     return []
 
@@ -70,9 +75,11 @@ def is_valid(pos, grid):
 
 
 def reconstruct_path(parent, start, end):
+    global path_length
     path = []
     current = end
     while current != start:
+        path_length += 1
         path.append(current)
         current = parent[current]
     path.append(start)

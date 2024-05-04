@@ -3,6 +3,8 @@ import pygame
 import sys
 from grid import Tile
 
+tiles_visited = 0
+path_length = 1 # intialzing at 1 because it isnt counting end at the function
 def heuristic(a, b):
     # Manhattan distance on a grid
     (x1, y1) = a
@@ -10,6 +12,8 @@ def heuristic(a, b):
     return abs(x1 - x2) + abs(y1 - y2)
 
 def gbfs(start, end, grid_instance, screen, delay=100):
+    global tiles_visited
+    global path_length
     queue = PriorityQueue()
     queue.put((0,start))
     visited = set([start])
@@ -17,7 +21,7 @@ def gbfs(start, end, grid_instance, screen, delay=100):
 
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Down, Right, Up, Left
 
-    while queue:
+    while not queue.empty():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -38,6 +42,7 @@ def gbfs(start, end, grid_instance, screen, delay=100):
                 grid_instance.draw()
                 pygame.display.flip()
                 pygame.time.delay(delay)
+            print(f"the path length is {path_length} and the tiles visited by GREEDY BFS is {tiles_visited}")
             return path
 
         for dx, dy in directions:
@@ -49,6 +54,7 @@ def gbfs(start, end, grid_instance, screen, delay=100):
                 queue.put((dist_neigh, neighbor))
                 if neighbor != end:
                     grid_instance.tiles[neighbor[1]][neighbor[0]] = Tile.FRONTIER
+                    tiles_visited += 1
 
     return []
 
@@ -60,9 +66,11 @@ def is_valid(pos, grid):
 
 
 def reconstruct_path(parent, start, end):
+    global path_length
     path = []
     current = end
     while current != start:
+        path_length += 1
         path.append(current)
         current = parent[current]
     path.append(start)

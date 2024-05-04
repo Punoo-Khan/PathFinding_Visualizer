@@ -25,10 +25,10 @@ def bfs(start, end, grid_instance, screen, delay=100):
         current = queue.popleft()
         current_distance = calc_distance(current, end)
         if current_distance > 0.0 and total_distance > 0.0:
-            ratio = total_distance/current_distance
-            #ratio = 1 - ratio
-            #print(ratio)
-            #sound.play_sound(volume=1.0,pitch=ratio)
+            ratio = current_distance / total_distance
+            sound.adjust_pitch(ratio)  # Simulate pitch change by volume adjustment
+            #sound.play_sound(volume=1.0)  # Play the sound without waiting
+
         if current != start:
             grid_instance.tiles[current[1]][current[0]] = Tile.VISITED
             grid_instance.draw()
