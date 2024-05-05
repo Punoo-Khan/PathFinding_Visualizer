@@ -97,6 +97,9 @@ def main():
                         end_time = time.time()
                         time_taken = end_time - start_time
                         print(f"A* Algorithm took {time_taken:.2f} seconds to complete.")
+
+                        start_set = False
+                        end_set = False
                     else:
                         pass
                 elif random_button.is_clicked(mouse_pos):
