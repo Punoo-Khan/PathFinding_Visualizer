@@ -1,20 +1,20 @@
 import pygame
 
 class button:
-    def __init__(self, x, y, width, height, text=''):
-        self.rect = pygame.Rect(x, y, width, height)
+    def __init__(self, text, font, x, y, color):
         self.text = text
-        self.color = (200, 200, 200)  # Light gray
+        self.font = font
+        self.color = color
+        self.image = font.render(text, True, self.color)
+        self.rect = self.image.get_rect(topleft=(x, y))
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.rect)
-        if self.text != '':
-            font = pygame.font.SysFont('Jokerman', 20)
-            text = font.render(self.text, True, (0, 0, 0))  # Black text
-            screen.blit(text, (self.rect.x + (self.rect.width - text.get_width()) // 2,
-                               self.rect.y + (self.rect.height - text.get_height()) // 2)
-                        )
+        screen.blit(self.image, self.rect)
 
-    def is_clicked(self, pos):
-        return self.rect.collidepoint(pos)
+    def is_hovered(self, mouse_pos):
+        return self.rect.collidepoint(mouse_pos)
+
+    def is_clicked(self, mouse_pos, event_type):
+        return self.rect.collidepoint(mouse_pos) and event_type == pygame.MOUSEBUTTONDOWN
+
 

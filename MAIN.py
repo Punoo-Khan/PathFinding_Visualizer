@@ -2,6 +2,8 @@ from collections import deque
 import pygame
 import random
 import sys
+
+import grid as grid1
 from grid import Grid, Tile  # Import the Grid class and the Tile enum
 from BFS_mod import bfs  # Import the bfs function
 from Greedy_mod import gbfs
@@ -11,13 +13,19 @@ import Button
 import copy
 import time
 
+pygame.init()
+pygame.mixer.init()
+pygame.mixer.music.load('Undertale OST： 085 - Fallen Down (Reprise).mp3')
+pygame.mixer.music.play(-1)
 start_set = False
 end_set = False
 WINDOW_SIZE = (800, 600)
 GRID_SIZE = (20, 15) #dimesions of grid
-bfs_button = Button.button(650, 550, 100, 40, 'START')
-random_button = Button.button(400, 550, 100, 40, 'RANDOM')
-
+font = pygame.font.SysFont('Comic sans', 25)
+#bfs_button = Button.button(650, 550, 100, 40, 'START')
+#random_button = Button.button(400, 550, 100, 40, 'RANDOM')
+bfs_button = Button.button('START',font, 650, 550, grid1.COLORS[Tile.FRONTIER])
+random_button = Button.button('RANDOM',font, 400, 550, grid1.COLORS[Tile.FRONTIER])
 def generate_random_map(grid):
     global start_set
     global end_set
@@ -51,7 +59,6 @@ def generate_random_map(grid):
 def main():
     global start_set
     global end_set
-    pygame.init()
     screen = pygame.display.set_mode(WINDOW_SIZE)
     clock = pygame.time.Clock()
     grid = Grid(screen, GRID_SIZE, WINDOW_SIZE)
@@ -64,11 +71,22 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.MOUSEMOTION:
+                mouse_pos = event.pos
+                if bfs_button.is_hovered(mouse_pos):
+                    bfs_button.image = font.render(bfs_button.text, True, grid1.COLORS[Tile.GREEN])
+                else:
+                    bfs_button.image = font.render(bfs_button.text, True, grid1.COLORS[Tile.FRONTIER])
+                if random_button.is_hovered(mouse_pos):
+                    random_button.image = font.render(random_button.text, True, grid1.COLORS[Tile.GREEN])
+                else:
+                    random_button.image = font.render(random_button.text, True, grid1.COLORS[Tile.FRONTIER])
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 tile_pos = grid.get_tile_pos(mouse_pos)
 
-                if bfs_button.is_clicked(mouse_pos):
+                if bfs_button.is_clicked(mouse_pos,event.type):
+                    bfs_button.image = font.render(bfs_button.text, True, grid1.COLORS[Tile.RED])
                     if start_set and end_set:
                         saved_tiles = copy.deepcopy(grid.tiles)
                         start_time = time.time()
@@ -102,7 +120,8 @@ def main():
                         end_set = False
                     else:
                         pass
-                elif random_button.is_clicked(mouse_pos):
+                elif random_button.is_clicked(mouse_pos,event.type):
+                    random_button.image = font.render(random_button.text, True, grid1.COLORS[Tile.RED])
                     generate_random_map(grid)
                     grid.draw()
                     pygame.display.flip()

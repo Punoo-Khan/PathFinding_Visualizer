@@ -61,9 +61,10 @@ def Astar(start, end, grid_instance, screen, delay=100):
                     gx[neighbor] = gx_neigh
                     fx[neighbor] = fx_neigh
                     queue.put((fx_neigh, neighbor))
+                    grid_instance.tiles[neighbor[1]][neighbor[0]] = Tile.FRONTIER
+                    tiles_visited += 1
                     if neighbor != end:
-                        grid_instance.tiles[neighbor[1]][neighbor[0]] = Tile.FRONTIER
-                        tiles_visited += 1
+                        pass
 
     return []
 
